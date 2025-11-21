@@ -1,5 +1,6 @@
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.HttpClient;
+//import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.core5.http.HttpEntity;
@@ -56,8 +57,10 @@ public class SimpleTriplyUpload {
         post.setEntity(entity);
 
         System.out.println("creating default client");
-        HttpClient client = HttpClients.createDefault();
-        String response = client.execute(post, resp -> EntityUtils.toString(resp.getEntity()));
+        String response;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            response = client.execute(post, resp -> EntityUtils.toString(resp.getEntity()));
+        }
         System.out.println("TriplyDB response: " + response);
         return response;
     }
